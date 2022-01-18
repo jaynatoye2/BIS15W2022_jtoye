@@ -1,6 +1,6 @@
 ---
 title: "Lab 4 Homework"
-author: "Please Add Your Name Here"
+author: "Jayna Toye"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -31,23 +31,110 @@ Data: http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1
 
 **1. Load the data into a new object called `homerange`.**
 
+```{r}
+
+homerange <- readr::read_csv("data/Tamburelloetal_HomeRangeDatabase.csv")
+homerange
+
+```
+
+
 **2. Explore the data. Show the dimensions, column names, classes for each variable, and a statistical summary. Keep these as separate code chunks.**  
+```{r}
+dim(homerange)
+```
+```{r}
+colnames(homerange)
+```
+```{r}
+str(homerange)
+```
+```{r}
+summary(homerange)
+```
+
 
 **3. Change the class of the variables `taxon` and `order` to factors and display their levels.**  
+```{r}
+class(homerange$taxon)
+class(homerange$order)
+```
+```{r}
+homerange$taxon <- as.factor(homerange$taxon)
+homerange$order <- as.factor(homerange$order)
+class(homerange$taxon)
+class(homerange$order)
+```
+```{r}
+levels(homerange$taxon)
+levels(homerange$order)
+```
+
 
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
+```{r}
+taxa <- select(homerange, "taxon", "common.name", "class", "order", "family", "genus", "species")
+taxa
+```
+
 
 **5. The variable `taxon` identifies the large, common name groups of the species represented in `homerange`. Make a table the shows the counts for each of these `taxon`.**  
+```{r}
+table(homerange$taxon)
+```
+
 
 **6. The species in `homerange` are also classified into trophic guilds. How many species are represented in each trophic guild.**  
+```{r}
+table(homerange$trophic.guild)
+```
+
 
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
+```{r}
+carnivore <- filter(homerange, trophic.guild=="carnivore")
+carnivore
+herbivore <- filter(homerange, trophic.guild=="herbivore")
+herbivore
+
+```
+
 
 **8. Do herbivores or carnivores have, on average, a larger `mean.hra.m2`? Remove any NAs from the data.**  
+```{r}
+anyNA(herbivore$"mean.hra.m2")
+anyNA(carnivore$"mean.hra.m2")
+```
+```{r}
+mean(herbivore$"mean.hra.m2")
+mean(carnivore$"mean.hra.m2")
+```
+Herbivores have a larger mean.hra.m2
 
 **9. Make a new dataframe `deer` that is limited to the mean mass, log10 mass, family, genus, and species of deer in the database. The family for deer is cervidae. Arrange the data in descending order by log10 mass. Which is the largest deer? What is its common name?**  
+```{r}
+deer <- filter(homerange, family=="cervidae")
+deer
+```
+```{r}
+deer_2 <- select(deer, "mean.mass.g", "log10.mass", "family", "genus", "species")
+deer_2
+```
+
+```{r}
+arrange(deer_2, desc(log10.mass))
+```
+The largest deer would be alces alces
 
 **10. As measured by the data, which snake species has the smallest homerange? Show all of your work, please. Look this species up online and tell me about it!** **Snake is found in taxon column**    
+```{r}
+snakes <- filter(homerange, taxon=="snakes")
+snakes
+```
+```{r}
+arrange(snakes, desc(mean.hra.m2))
+```
+Namaqua dwarf adder has the smallest homerange. This is the smallest venomous viper from the coastal region between Namibia and South Africa. This snake is mostly active during the day and hunts lizards and rain frogs. Predators of the viper include small carnivores, birds of prey and other snakes but the biggest threat is habitat destruction and the exotic pet trade. 
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
