@@ -2,10 +2,11 @@
 title: "`summarize()`, `tabyl()`, and `group_by()`"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
     toc: yes
     toc_float: yes
+    keep_md: yes
   pdf_document:
     toc: yes
 ---
@@ -34,17 +35,23 @@ library("janitor")
 #install.packages("skimr")
 library("skimr")
 ```
+```{r}
+library(skimr)
+```
 
 ## Load the data
 For this lab, we will use the built-in data on mammal sleep patterns. From: _V. M. Savage and G. B. West. A quantitative, theoretical framework for understanding mammalian sleep. Proceedings of the National Academy of Sciences, 104 (3):1051-1056, 2007_.
 ```{r}
-?msleep
+msleep <- msleep
+```
+
+```{r}
 names(msleep)
 ```
 
 We will also use the awesome [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/articles/intro.html) data in the second part of lab so let's install it now.
 ```{r}
-#remotes::install_github("allisonhorst/palmerpenguins")
+remotes::install_github("allisonhorst/palmerpenguins")
 ```
 
 ## dplyr Practice
@@ -56,6 +63,7 @@ msleep24 <- msleep %>%
   filter(!is.na(vore)) %>% 
   filter(sleep_total_24<0.3) %>% 
   arrange(desc(sleep_total_24))
+msleep24
 ```
 
 Did `dplyr` do what we expected? How do we check our output? Remember, just because your code runs it doesn't mean that it did what you intended.
@@ -83,7 +91,9 @@ msleep24 %>%
 ## Practice
 1. Which taxonomic orders have species that belong to more than one class of `vore`?
 ```{r}
-
+msleep%>%
+ filter(!is.na(vore))%>%
+ tabyl(order, vore)
 ```
 
 ## `summarize()`
@@ -126,7 +136,22 @@ msleep %>%
 ## Practice
 1. What is the mean, min, and max `bodywt` for the taxonomic order Primates? Provide the total number of observations.
 ```{r}
+names(msleep)
+```
 
+```{r}
+sum_wt <- msleep%>%
+  select(name, order, bodywt )%>%
+  filter(order=="Primates")
+sum_wt
+  
+```
+```{r}
+sum_wt%>%
+  summarize(mean_wt = mean(bodywt), 
+              min_wt = min(bodywt),
+              max_wt = max(bodywt),
+              total = n())
 ```
 
 `n_distinct()` is a very handy way of cleanly presenting the number of distinct observations. Here we show the number of distinct genera over 100 in body weight.
@@ -141,12 +166,18 @@ There are many other useful summary statistics, depending on your needs: sd(), m
 ## Practice
 1. How many genera are represented in the msleep data frame?
 ```{r}
-
+names(msleep)
+```
+```{r}
+msleep %>% 
+  select(genus) %>% 
+  summarise(n_genera=n_distinct(genus))
 ```
 
 2. What are the min, max, and mean `sleep_total` for all of the mammals? Be sure to include the total n.
 ```{r}
-
+msleep%>%
+  summarise(mean_sleep = mean(sleep_total), min_sleep = min(sleep_total), max_sleep = max(sleep_total), total = n())
 ```
 
 ## `group_by()`
@@ -163,19 +194,30 @@ msleep %>%
 ## Practice
 1. Calculate mean brain weight by taxonomic order in the msleep data.
 ```{r}
-
+msleep%>%
+   group_by(order) %>% 
+  summarize(mean_braintw = mean(brainwt))
 ```
+
+
 
 2. What does `NA` mean? How are NA's being treated by the summarize function?
-```{r}
-
-```
+Though there are some NA in the order not all of them are NA so we haven't filtered out the NA yet. 
 
 3. Try running the code again, but this time add `na.rm=TRUE`. What is the problem with Cetacea? Compare this to Carnivora. 
 ```{r}
+msleep%>%
+   group_by(order) %>% 
+  summarize(mean_braintw = mean(brainwt, na.rm=TRUE))
 
 ```
+```{r}
+msleep%>%
+  filter(order=="Cetacea")%>%
+  select(order, genus, brainwt)
+```
 
+We don't have any data on Cetacea! 
 ## That's it! Take a break and I will see you on Zoom!  
 
 -->[Home](https://jmledford3115.github.io/datascibiol/)  
