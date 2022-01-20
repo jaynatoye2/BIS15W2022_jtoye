@@ -176,7 +176,6 @@ mammals%>%
   arrange(desc(max_life_new))
 ```
 The oldest known mammal's lifespan is 1368, which is the Balaenoptera physalus.
-
 ## That's it! Take a break and I will see you on Zoom!  
 
 -->[Home](https://jmledford3115.github.io/datascibiol/)  
