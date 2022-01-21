@@ -2,10 +2,11 @@
 title: "summarize practice, `count()`, `across()`"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
     toc: yes
     toc_float: yes
+    keep_md: yes
   pdf_document:
     toc: yes
 ---
@@ -31,8 +32,15 @@ The summarize() and group_by() functions are powerful tools that we can use to p
 ```{r}
 glimpse(penguins)
 ```
+```{r}
+skim(penguins)
+```
 
 As biologists, a good question that we may ask is how do the measured variables differ by island (on average)?
+```{r}
+levels(penguins$island)
+```
+
 ```{r}
 penguins %>% 
   group_by(island) %>% 
@@ -106,17 +114,37 @@ penguins %>%
 ## Practice
 1. Produce a summary of the mean for bill_length_mm, bill_depth_mm, flipper_length_mm, and body_mass_g within Adelie penguins only. Be sure to provide the number of samples.
 ```{r}
+names(penguins)
+```
+```{r}
+levels(penguins$species)
+```
 
+```{r}
+penguins%>%
+  filter(species=="Adelie")%>%
+  summarize(bill_length_mean = mean(bill_length_mm, na.rm=T), bill_depth_mean = mean(bill_depth_mm, na.rm=T), flipper_mean=mean(flipper_length_mm, na.rm=T), body_mean= mean(body_mass_g, na.rm=T), n=n(), .group = 'keep')
+                                                                                        
+```
+```{r}
+penguins%>%
+  count(species)
 ```
 
 2. How does the mean of `bill_length_mm` compare between penguin species?
 ```{r}
-
+penguins%>%
+  group_by(species)%>%
+  summarise(bill_mean = mean(bill_length_mm, na.rm=T))
 ```
 
 3. For some penguins, their sex is listed as NA. Where do these penguins occur?
 ```{r}
-
+names(penguins)
+```
+```{r}
+penguins%>%
+  tabyl(species, island, sex)
 ```
 
 ## `across()`
@@ -151,6 +179,7 @@ penguins %>%
 table1 <- penguins %>%
   group_by(sex) %>% 
   summarize(across(contains("mm"), mean, na.rm=T))
+table1
 ```
 
 Here we summarize across all variables.
@@ -176,7 +205,9 @@ penguins %>%
 1. Produce separate summaries of the mean and standard deviation for bill_length_mm, bill_depth_mm, and flipper_length_mm for each penguin species. Be sure to provide the number of samples.  
 mean
 ```{r}
-
+penguins%>%
+  group_by(species)%>%
+  summarise(across(contains("mm"), mean, na.rm=T), n=n())
 ```
 
 ## Wrap-up  
