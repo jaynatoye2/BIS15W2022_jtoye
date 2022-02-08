@@ -116,7 +116,7 @@ colleges%>%
 
 Remove `Hastings College of Law` and `UC San Francisco` and store the final data frame as a new object `univ_calif_final`.
 ```{r}
-univ_calif_final <-colleges%>%
+univ_calif_final <-colleges%>% 
   filter_all(any_vars(str_detect(., "University of California")))%>%
   filter(instnm!="University of California-Hastings College of Law" & instnm!="University of California-San Francisco")
 univ_calif_final
