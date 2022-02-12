@@ -3,9 +3,9 @@ title: "Lab 10 Homework"
 author: "Jayna Toye"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
-    toc: no
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -83,7 +83,7 @@ deserts%>%
 5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
 ```{r}
 deserts%>%
-  ggplot(aes(x=weight, y=species)) + geom_boxplot()
+  ggplot(aes(x=weight, y=species)) + geom_boxplot() 
 ```
 
 
@@ -127,11 +127,18 @@ deserts%>%
 9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
 ```{r}
 deserts%>%
-  select(weight, species_id)%>%
-  arrange(desc(weight))
+  select(species_id, weight)%>%
+  mutate(mean_weight=mean(weight))%>%
+  arrange(desc(mean_weight))
+```
+
+```{r}
+deserts%>%
+  mutate(ratio= weight/hindfoot_length)
 ```
 ```{r}
-
+deserts%>%
+  ggplot(aes(x="ratio", fill=sex)) + geom_bar()
 ```
 
 10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
