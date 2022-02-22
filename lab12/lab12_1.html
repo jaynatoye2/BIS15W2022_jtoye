@@ -707,7 +707,7 @@ str(day)
 #&gt;  Date[1:1], format: &quot;2022-02-22&quot;</code></pre>
 <pre class="r"><code>datetime &lt;- now()
 datetime
-#&gt; [1] &quot;2022-02-22 13:16:27 PST&quot;</code></pre>
+#&gt; [1] &quot;2022-02-22 13:17:31 PST&quot;</code></pre>
 <p>We want to change our date column to the standard “YEAR-MO-DA” format that R will recognize as a date. Right now it is listed as day-month-year. We can use the base R function <code>as.Date()</code> or the lubridate function <code>dmy</code> for this.</p>
 <pre class="r"><code>dmy(spiders_with_locs$Date)
 #&gt; Warning: 2 failed to parse.
@@ -853,9 +853,9 @@ day(datetime)
 hour(datetime)
 #&gt; [1] 13
 minute(datetime)
-#&gt; [1] 16
+#&gt; [1] 17
 second(datetime)
-#&gt; [1] 27.48504
+#&gt; [1] 31.34615
 wday(datetime, label=T)
 #&gt; [1] Tue
 #&gt; Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat</code></pre>
