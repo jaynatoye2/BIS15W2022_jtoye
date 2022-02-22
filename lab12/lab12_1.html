@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2022-02-17" />
+<meta name="date" content="2022-02-22" />
 
 <title>Joins and Lubridate</title>
 
@@ -241,7 +241,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Joins and Lubridate</h1>
-<h4 class="date">2022-02-17</h4>
+<h4 class="date">2022-02-22</h4>
 
 </div>
 
@@ -261,7 +261,7 @@ div.tocify {
 library(here)
 library(janitor)
 library(lubridate)</code></pre>
-<p>Now we can list all of the files in a directory. This isvery helpful when you are working with multiple files at once.</p>
+<p>Now we can list all of the files in a directory. This is very helpful when you are working with multiple files at once.</p>
 <pre class="r"><code>files &lt;- list.files(path = &quot;data/spiders&quot;, pattern = &quot;.csv&quot;)
 files
 #&gt;  [1] &quot;Alameda .csv&quot;        &quot;Amador .csv&quot;         &quot;Butte .csv&quot;         
@@ -310,11 +310,48 @@ class(spider_list[[3]])
 <ol style="list-style-type: decimal">
 <li>What are the names of our list elements?</li>
 </ol>
+<pre class="r"><code>spider_list[[5]]
+#&gt; # A tibble: 7 × 9
+#&gt;   Accession Family    Genus   Country State      County Locality Date  Collector
+#&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;    
+#&gt; 1   9038557 Telemidae Usofila USA     California Contr… Mt. Dia… 22/2… D Ubick  
+#&gt; 2   9038558 Telemidae Usofila USA     California Contr… Mt. Dia… 22/2… D Ubick  
+#&gt; 3   9038559 Telemidae Usofila USA     California Contr… Mt. Dia… 22/2… D Ubick  
+#&gt; 4   9038560 Telemidae Usofila USA     California Contr… Orinda … 12/1… V Roth   
+#&gt; 5   9038561 Telemidae Usofila USA     California Contr… Orinda … 5/12… W Fergus…
+#&gt; 6   9038562 Telemidae Usofila USA     California Contr… Redwood… 18/5… R Schust…
+#&gt; 7   9038775 Telemidae Usofila USA     California Contr… Richmon… 27/3… &lt;NA&gt;
+class(spider_list[[7]])
+#&gt; [1] &quot;spec_tbl_df&quot; &quot;tbl_df&quot;      &quot;tbl&quot;         &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>str(spider_list[[10]])
+#&gt; spec_tbl_df [20 × 9] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+#&gt;  $ Accession: num [1:20] 9038704 9038705 9038706 9038707 9038708 ...
+#&gt;  $ Family   : chr [1:20] &quot;Telemidae&quot; &quot;Telemidae&quot; &quot;Telemidae&quot; &quot;Telemidae&quot; ...
+#&gt;  $ Genus    : chr [1:20] &quot;Usofila&quot; &quot;Usofila&quot; &quot;Usofila&quot; &quot;Usofila&quot; ...
+#&gt;  $ Country  : chr [1:20] &quot;USA&quot; &quot;USA&quot; &quot;USA&quot; &quot;USA&quot; ...
+#&gt;  $ State    : chr [1:20] &quot;California&quot; &quot;California&quot; &quot;California&quot; &quot;California&quot; ...
+#&gt;  $ County   : chr [1:20] &quot;Marin&quot; &quot;Marin&quot; &quot;Marin&quot; &quot;Marin&quot; ...
+#&gt;  $ Locality : chr [1:20] &quot;6 mi E Point Reyes Sta&quot; &quot;Novato, San Marin Dr.&quot; &quot;Black Point&quot; &quot;Ross Bald Hill&quot; ...
+#&gt;  $ Date     : chr [1:20] &quot;1/3/1960&quot; &quot;14/3/1982&quot; &quot;24/3/1960&quot; &quot;01/3/1991&quot; ...
+#&gt;  $ Collector: chr [1:20] &quot;Grigarick, Smith, Schuster&quot; &quot;D Ubick&quot; &quot;RO Schuster&quot; &quot;D Ubick, T Briggs&quot; ...
+#&gt;  - attr(*, &quot;spec&quot;)=
+#&gt;   .. cols(
+#&gt;   ..   Accession = col_double(),
+#&gt;   ..   Family = col_character(),
+#&gt;   ..   Genus = col_character(),
+#&gt;   ..   Country = col_character(),
+#&gt;   ..   State = col_character(),
+#&gt;   ..   County = col_character(),
+#&gt;   ..   Locality = col_character(),
+#&gt;   ..   Date = col_character(),
+#&gt;   ..   Collector = col_character()
+#&gt;   .. )
+#&gt;  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 </div>
 <div id="naming-list-elements" class="section level2">
 <h2>Naming List Elements</h2>
 <p>We don’t need to here, but for demonstration purposes we can name the elements in our list. We will first get the names of each file, but we only want the county part. We will use <code>strsplit()</code> for that, which creates a nested list of strings. We want to keep the first element of each list element. Because there is only one element in each nested list element, we can use <code>unlist()</code>.</p>
-<pre class="r"><code>names &lt;- list.files(path = &quot;data/spiders&quot;, pattern = &quot;.csv&quot;)
+<pre class="r"><code>names &lt;- list.files(path = &quot;data/spiders&quot;, pattern = &quot;.csv&quot;) 
 names_list &lt;- strsplit(names, split = &quot; .csv&quot;)
 names_list
 #&gt; [[1]]
@@ -443,6 +480,30 @@ names(spider_list)
 #&gt;   Accession Family    Genus   Country State      County Locality Date  Collector
 #&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;    
 #&gt; 1   9038509 Telemidae Usofila USA     California Butte  Dry Cre… 2/3/… RO Schus…</code></pre>
+<pre class="r"><code>spider_list$Marin
+#&gt; # A tibble: 20 × 9
+#&gt;    Accession Family    Genus   Country State  County Locality   Date  Collector 
+#&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;     
+#&gt;  1   9038704 Telemidae Usofila USA     Calif… Marin  6 mi E Po… 1/3/… Grigarick…
+#&gt;  2   9038705 Telemidae Usofila USA     Calif… Marin  Novato, S… 14/3… D Ubick   
+#&gt;  3   9038706 Telemidae Usofila USA     Calif… Marin  Black Poi… 24/3… RO Schust…
+#&gt;  4   9038707 Telemidae Usofila USA     Calif… Marin  Ross Bald… 01/3… D Ubick, …
+#&gt;  5   9038708 Telemidae Usofila USA     Calif… Marin  Taylor St… 8/11… V Roth, R…
+#&gt;  6   9038709 Telemidae Usofila USA     Calif… Marin  Novato, S… 7/3/… D Ubick   
+#&gt;  7   9038710 Telemidae Usofila USA     Calif… Marin  Ring Moun… 14/1… TS Briggs 
+#&gt;  8   9038711 Telemidae Usofila USA     Calif… Marin  SE slope … 08/3… D Ubick   
+#&gt;  9   9038712 Telemidae Usofila USA     Calif… Marin  Novato, S… 02/1… D Ubick   
+#&gt; 10   9038713 Telemidae Usofila USA     Calif… Marin  San Geron… 15/1… D Ubick, …
+#&gt; 11   9038714 Telemidae Usofila USA     Calif… Marin  Novato: S… 23/2… D Ubick   
+#&gt; 12   9038715 Telemidae Usofila USA     Calif… Marin  SE slope … 08/3… D Ubick   
+#&gt; 13   9038716 Telemidae Usofila USA     Calif… Marin  Novato: S… 7/3/… D Ubick   
+#&gt; 14   9038717 Telemidae Usofila USA     Calif… Marin  San Geron… 30/1… D Ubick   
+#&gt; 15   9038718 Telemidae Usofila USA     Calif… Marin  Novato: S… 25/4… D Ubick   
+#&gt; 16   9038719 Telemidae Usofila USA     Calif… Marin  South Tib… 12/3… J Boutin  
+#&gt; 17   9038720 Telemidae Usofila USA     Calif… Marin  South Tib… 19/3… D Ubick, …
+#&gt; 18   9038721 Telemidae Usofila USA     Calif… Marin  South Tib… 27/2… D Ubick, …
+#&gt; 19   9038722 Telemidae Usofila USA     Calif… Marin  Novato, S… 07/1… D Ubick   
+#&gt; 20   9038723 Telemidae Usofila USA     Calif… Marin  Novato: S… 16/3… D Ubick, …</code></pre>
 </div>
 <div id="merging-files" class="section level2">
 <h2>Merging Files</h2>
@@ -486,6 +547,51 @@ table_B &lt;- read_csv(here(&quot;lab12&quot;, &quot;data&quot;, &quot;table_B.c
 #&gt; 
 #&gt; ℹ Use `spec()` to retrieve the full column specification for this data.
 #&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>str(table_A)
+#&gt; spec_tbl_df [3 × 5] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+#&gt;  $ customer_ID       : num [1:3] 1 2 3
+#&gt;  $ n_orders          : num [1:3] 5 10 4
+#&gt;  $ total_value_orders: num [1:3] 500 240 40
+#&gt;  $ ave_value_orders  : num [1:3] 100 24 10
+#&gt;  $ last_order_date   : chr [1:3] &quot;12/7/20&quot; &quot;1/2/18&quot; &quot;3/6/20&quot;
+#&gt;  - attr(*, &quot;spec&quot;)=
+#&gt;   .. cols(
+#&gt;   ..   customer_ID = col_double(),
+#&gt;   ..   n_orders = col_double(),
+#&gt;   ..   total_value_orders = col_double(),
+#&gt;   ..   ave_value_orders = col_double(),
+#&gt;   ..   last_order_date = col_character()
+#&gt;   .. )
+#&gt;  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;
+table_A
+#&gt; # A tibble: 3 × 5
+#&gt;   customer_ID n_orders total_value_orders ave_value_orders last_order_date
+#&gt;         &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;          
+#&gt; 1           1        5                500              100 12/7/20        
+#&gt; 2           2       10                240               24 1/2/18         
+#&gt; 3           3        4                 40               10 3/6/20</code></pre>
+<pre class="r"><code>str(table_B)
+#&gt; spec_tbl_df [3 × 4] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+#&gt;  $ customer_ID: num [1:3] 1 2 4
+#&gt;  $ age        : num [1:3] 50 44 30
+#&gt;  $ gender     : chr [1:3] &quot;M&quot; &quot;F&quot; &quot;F&quot;
+#&gt;  $ favorite   : chr [1:3] &quot;t_shirts&quot; &quot;leggings&quot; &quot;jumpers&quot;
+#&gt;  - attr(*, &quot;spec&quot;)=
+#&gt;   .. cols(
+#&gt;   ..   customer_ID = col_double(),
+#&gt;   ..   age = col_double(),
+#&gt;   ..   gender = col_character(),
+#&gt;   ..   favorite = col_character()
+#&gt;   .. )
+#&gt;  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;
+table_B
+#&gt; # A tibble: 3 × 4
+#&gt;   customer_ID   age gender favorite
+#&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   
+#&gt; 1           1    50 M      t_shirts
+#&gt; 2           2    44 F      leggings
+#&gt; 3           4    30 F      jumpers</code></pre>
+<p>The customer_ID is the only trait that is the same between table A and B. So you use the join function.</p>
 <p>The general syntax for joins is…</p>
 <pre class="r"><code>#join_type(firstTable, secondTable, by=columnTojoinOn)</code></pre>
 <p><code>inner_join</code><br />
@@ -571,29 +677,22 @@ spiders_locs
 <ol style="list-style-type: decimal">
 <li>Which type of join is most appropriate in this case?</li>
 </ol>
-<pre class="r"><code>spiders_with_locs &lt;- left_join(spiders_all, spiders_locs, by = c(&quot;Accession&quot;))
-summary(spiders_with_locs)
-#&gt;    Accession           Family             Genus             Country         
-#&gt;  Min.   : 9034549   Length:270         Length:270         Length:270        
-#&gt;  1st Qu.: 9038573   Class :character   Class :character   Class :character  
-#&gt;  Median : 9038644   Mode  :character   Mode  :character   Mode  :character  
-#&gt;  Mean   : 9641191                                                           
-#&gt;  3rd Qu.: 9038718                                                           
-#&gt;  Max.   :90387441                                                           
-#&gt;     State              County            Locality             Date          
-#&gt;  Length:270         Length:270         Length:270         Length:270        
-#&gt;  Class :character   Class :character   Class :character   Class :character  
-#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;   Collector            Latitude       Longitude     
-#&gt;  Length:270         Min.   :34.67   Min.   :-124.1  
-#&gt;  Class :character   1st Qu.:37.88   1st Qu.:-122.5  
-#&gt;  Mode  :character   Median :38.19   Median :-122.1  
-#&gt;                     Mean   :38.49   Mean   :-121.6  
-#&gt;                     3rd Qu.:38.88   3rd Qu.:-120.5  
-#&gt;                     Max.   :44.51   Max.   :-115.5</code></pre>
+<pre class="r"><code>spiders_with_locs &lt;- full_join(spiders_all, spiders_locs, by = c(&quot;Accession&quot;))
+spiders_with_locs
+#&gt; # A tibble: 270 × 11
+#&gt;    Accession Family Genus Country State County Locality Date  Collector Latitude
+#&gt;        &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
+#&gt;  1   9038521 Telem… Usof… USA     Cali… Alame… Berkeley 2/3/… LM Smith      37.9
+#&gt;  2   9038522 Telem… Usof… USA     Cali… Alame… Castro … 24/3… WM Pearce     37.7
+#&gt;  3   9038523 Telem… Usof… USA     Cali… Alame… Niles, … 2/1/… V Roth        37.6
+#&gt;  4   9038524 Telem… Usof… USA     Cali… Alame… Oakland  18/2… WG Benti…     37.8
+#&gt;  5   9038525 Telem… Usof… USA     Cali… Alame… Oakland  25/1… R Schust…     37.8
+#&gt;  6   9038526 Telem… Usof… USA     Cali… Alame… Oakland  18/2… WC Benti…     37.8
+#&gt;  7   9038527 Telem… Usof… USA     Cali… Alame… Oakland  10/1… J Helfer      37.8
+#&gt;  8  90386281 Telem… Usof… USA     Cali… Alame… Oakland… 17/1… Roth, Sc…     37.8
+#&gt;  9   9038529 Telem… Usof… USA     Cali… Alame… Oakland… 17/1… Roth, Sc…     37.8
+#&gt; 10  90387441 Telem… Usof… USA     Cali… Alame… Berkele… 17/2… PR Craig…     37.9
+#&gt; # … with 260 more rows, and 1 more variable: Longitude &lt;dbl&gt;</code></pre>
 <p>As a side note, joining data can highlight problems or typos with the data when the join does not go as expected.</p>
 </div>
 <div id="formatting-dates" class="section level2">
@@ -605,10 +704,10 @@ summary(spiders_with_locs)
 <p>The <code>lubridate</code> package was specifically created to deal with dates of all types. There are many useful functions in <code>lubridate</code> for working with dates. Please see the excellent tutorial provided by <a href="https://www.youtube.com/watch?v=VYAo69WdJZg&amp;ab_channel=RichardOnData">RichardOnData</a>.</p>
 <pre class="r"><code>day &lt;- today()
 str(day)
-#&gt;  Date[1:1], format: &quot;2022-02-17&quot;</code></pre>
+#&gt;  Date[1:1], format: &quot;2022-02-22&quot;</code></pre>
 <pre class="r"><code>datetime &lt;- now()
 datetime
-#&gt; [1] &quot;2022-02-17 11:29:05 PST&quot;</code></pre>
+#&gt; [1] &quot;2022-02-22 13:16:27 PST&quot;</code></pre>
 <p>We want to change our date column to the standard “YEAR-MO-DA” format that R will recognize as a date. Right now it is listed as day-month-year. We can use the base R function <code>as.Date()</code> or the lubridate function <code>dmy</code> for this.</p>
 <pre class="r"><code>dmy(spiders_with_locs$Date)
 #&gt; Warning: 2 failed to parse.
@@ -734,21 +833,31 @@ dateformat5 &lt;- &quot;20200922 170000&quot;</code></pre>
 <ol style="list-style-type: decimal">
 <li>Convert each of the examples above using lubridate.</li>
 </ol>
+<pre class="r"><code>ymd(dateformat1)
+#&gt; [1] &quot;2020-09-22&quot;</code></pre>
+<pre class="r"><code>mdy(dateformat2)
+#&gt; [1] &quot;2020-09-22&quot;</code></pre>
+<pre class="r"><code>dmy(dateformat3)
+#&gt; [1] &quot;2020-09-22&quot;</code></pre>
+<pre class="r"><code>mdy_hms(dateformat4)
+#&gt; [1] &quot;2020-09-22 17:00:00 UTC&quot;</code></pre>
+<pre class="r"><code>ymd_hms(dateformat5)
+#&gt; [1] &quot;2020-09-22 17:00:00 UTC&quot;</code></pre>
 <p>Have a look at these options.</p>
 <pre class="r"><code>year(datetime)
 #&gt; [1] 2022
 month(datetime)
 #&gt; [1] 2
 day(datetime)
-#&gt; [1] 17
+#&gt; [1] 22
 hour(datetime)
-#&gt; [1] 11
+#&gt; [1] 13
 minute(datetime)
-#&gt; [1] 29
+#&gt; [1] 16
 second(datetime)
-#&gt; [1] 5.50634
+#&gt; [1] 27.48504
 wday(datetime, label=T)
-#&gt; [1] Thu
+#&gt; [1] Tue
 #&gt; Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat</code></pre>
 </div>
 <div id="export-for-part-2" class="section level2">
@@ -761,6 +870,7 @@ wday(datetime, label=T)
 <p>It will be very helpful if you can install the following packages before the next lab. Please install them in order! <code>devtools</code> and <code>ggmap</code></p>
 <pre class="r"><code>#install.packages(&quot;devtools&quot;)
 #library(devtools)
+
 #devtools::install_github(&quot;dkahle/ggmap&quot;)</code></pre>
 <p><code>rgeos</code>, <code>rgdal</code>, and <code>albersusa</code></p>
 <pre class="r"><code>#install.packages(&quot;albersusa&quot;)</code></pre>

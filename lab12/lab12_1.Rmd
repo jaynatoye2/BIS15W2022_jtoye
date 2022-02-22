@@ -33,7 +33,7 @@ library(janitor)
 library(lubridate)
 ```
 
-Now we can list all of the files in a directory. This isvery helpful when you are working with multiple files at once.
+Now we can list all of the files in a directory. This is very helpful when you are working with multiple files at once.
 ```{r}
 files <- list.files(path = "data/spiders", pattern = ".csv")
 files
@@ -60,13 +60,17 @@ class(spider_list[[3]])
 ## Practice
 1. What are the names of our list elements?
 ```{r}
-
+spider_list[[5]]
+class(spider_list[[7]])
+```
+```{r}
+str(spider_list[[10]])
 ```
 
 ## Naming List Elements
 We don't need to here, but for demonstration purposes we can name the elements in our list. We will first get the names of each file, but we only want the county part. We will use `strsplit()` for that, which creates a nested list of strings. We want to keep the first element of each list element. Because there is only one element in each nested list element, we can use `unlist()`.
 ```{r}
-names <- list.files(path = "data/spiders", pattern = ".csv")
+names <- list.files(path = "data/spiders", pattern = ".csv") 
 names_list <- strsplit(names, split = " .csv")
 names_list
 ```
@@ -86,6 +90,9 @@ names(spider_list)
 ```{r}
 spider_list$Butte
 ```
+```{r}
+spider_list$Marin
+```
 
 ## Merging Files
 We are fortunate here in that all of our data frames have the same column names. This makes it easy to merge the data together with `bind_rows()` from`dplyr`. `bind_rows()` matches columns by name.
@@ -102,6 +109,15 @@ Let's assume we have a database of customers and their purchases.
 table_A <- read_csv(here("lab12", "data", "table_A.csv"))
 table_B <- read_csv(here("lab12", "data", "table_B.csv"))
 ```
+```{r}
+str(table_A)
+table_A
+```
+```{r}
+str(table_B)
+table_B
+```
+The customer_ID is the only trait that is the same between table A and B. So you use the join function.
 
 The general syntax for joins is...
 ```{r}
@@ -160,8 +176,8 @@ We will use a join here to merge lat/long to our data frame. Both files contain 
 ## Practice
 1. Which type of join is most appropriate in this case?  
 ```{r}
-spiders_with_locs <- left_join(spiders_all, spiders_locs, by = c("Accession"))
-summary(spiders_with_locs)
+spiders_with_locs <- full_join(spiders_all, spiders_locs, by = c("Accession"))
+spiders_with_locs
 ```
 
 As a side note, joining data can highlight problems or typos with the data when the join does not go as expected.  
@@ -207,23 +223,23 @@ dateformat5 <- "20200922 170000"
 ## Practice 
 1. Convert each of the examples above using lubridate.
 ```{r}
-
+ymd(dateformat1)
 ```
 
 ```{r}
-
+mdy(dateformat2)
 ```
 
 ```{r}
-
+dmy(dateformat3)
 ```
 
 ```{r}
-
+mdy_hms(dateformat4)
 ```
 
 ```{r}
-
+ymd_hms(dateformat5)
 ```
 
 Have a look at these options.
@@ -249,6 +265,7 @@ It will be very helpful if you can install the following packages before the nex
 ```{r}
 #install.packages("devtools")
 #library(devtools)
+
 #devtools::install_github("dkahle/ggmap")
 ```
 
