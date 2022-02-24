@@ -22,6 +22,7 @@ There are many packages and techniques for working with spatial data in R. We wi
 
 If you completed part 1 of today's lab then you should have the following packages installed. If not, then you should get them going now. You need to do these in order!  
 
+
 `devtools` and `ggmap`
 ```{r}
 #install.packages("devtools")
@@ -45,6 +46,7 @@ library(ggmap)
 Let's load our processed data from the first part of the lab.
 ```{r, message = FALSE}
 spiders <- read_csv(here("lab12", "data", "spiders_with_locs.csv")) %>% clean_names()
+spiders
 ```
 
 There is an error in one of the coordinates that we will fix here.
@@ -68,7 +70,7 @@ Now we set the bounding box.
 ```{r}
 lat <- c(34.67, 41.80)
 long <- c(-124.1, -115.5)
-bbox <- make_bbox(long, lat, f = 0.05)
+bbox <- make_bbox(long, lat, f = 0.05) 
 ```
 
 Let's get a base map for our bounding box area. We will use the stamen maps because they are free. There are several different map types, including: `terrain-labels`, `terrain-lines`, `toner`, `toner-2011`, `toner-background`, `toner-hybrid`, `toner-lines`, `toner-lite`, and `watercolor.`
@@ -91,90 +93,15 @@ ggmap(map1) +
 ## Practice
 1. Map the spider locations with a different type of base map. Try to adjust the map using different aesthetics including `size`, `color`, and `alpha`.
 ```{r}
-
+map2 <- get_map(bbox, maptype = "watercolor", source = "stamen")
+ggmap(map2)
 ```
 
 ```{r}
-
+map3<- get_map(bbox, maptype = "toner-hybrid", source = "stamen")
+ggmap(map3)
 ```
 
-## Albers USA
-The Albers USA [package](https://github.com/hrbrmstr/albersusa) is a very fast way to produce clean maps that include nice overlays of counties across the US. I haven't explored it fully, but here are some nice examples.
-```{r}
-library(albersusa)
-```
-
-State Boundaries.
-```{r}
-us_comp <- usa_sf() # get a composite map of the USA
-```
-
-County boundaries in each state.
-```{r}
-cnty_comp <- counties_sf() # get a composite map of USA counties
-```
-
-Map of the USA- notice that you can still use themes. `geom_sf` stands for simple feature.
-```{r}
-ggplot() + 
-  geom_sf(data = us_comp, size = 0.125) + 
-  theme_linedraw()+
-  labs(title = "USA State Boundaries")
-```
-
-Since we want to produce a map of our spiders we need to restrict the map to California.
-```{r}
-ca_comp <- us_comp %>% 
-  filter(name=="California")
-```
-
-```{r}
-ca_cnty_comp <- cnty_comp %>% 
-  filter(state=="California")
-```
-
-Our base map
-```{r}
-ggplot() +
-  geom_sf(data = ca_comp, size = 0.125)+
-  geom_sf(data = ca_cnty_comp, size = 0.125)
-```
-
-All we do now is add the `geom_point()` layer.
-```{r}
-ggplot() +
-  geom_sf(data = ca_comp, size = 0.125)+
-  geom_sf(data = ca_cnty_comp, size = 0.125)+
-  geom_point(data = spiders, aes(longitude, latitude))
-```
-
-We can spice things up a bit by adding aesthetics.
-```{r}
-ggplot() +
-  geom_sf(data = ca_comp, size = 0.125)+
-  geom_sf(data = ca_cnty_comp, size = 0.125)+
-  geom_point(data = spiders, aes(longitude, latitude))+
-  labs(x = "Figure 1: Distribution of Usofila spiders")+
-  theme_minimal() +
-  theme(axis.text = element_blank()) +
-  theme(axis.title.x = element_text(hjust=0.5, size = 10)) +
-  theme(axis.title.y = element_blank()) +
-  theme(panel.grid = element_blank()) +
-  theme(legend.position = c(0.9, 0.3)) -> uso_map
-
-ggsave(filename = "map.svg", device = "svg", plot = uso_map, height = 5, width = 7)
-```
-
-## Practice
-1. Make a new column that labels each specimen as occurring in a cave or on the surface. The word "Cave" is part of the locality information.
-```{r}
-
-```
-
-2. Now adjust the plot above to give a different color for specimens that occur in caves.
-```{r}
-
-```
 
 ## That's it, let's take a break!   
 
