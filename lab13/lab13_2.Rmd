@@ -2,6 +2,8 @@
 title: "Intro to Shiny Part 2"
 date: "`r Sys.Date()`"
 output:
+  html_notebook: 
+    toc: yes
   html_document:
     theme: spacelab
     toc: yes
@@ -118,14 +120,14 @@ ui <- fluidPage(
               selected = "bill_length_mm"),
     selectInput("y", "Select Y Variable", choices = c("bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"),
               selected = "bill_depth_mm"),
-    sliderInput("fontsize", "Select the Font Size", min = 10, max = 24, value = 18, step = 1),
+    sliderInput("pointsize", "Select the Point Size", min = 0.5, max = 3, value = 1, step = 0.5),
     plotOutput("plot", width = "500px", height = "400px")
 )
 
 server <- function(input, output, session) {
   session$onSessionEnded(stopApp)
   output$plot <- renderPlot({
-  ggplot(penguins, aes_string(x = input$x, y = input$y, color="species")) + geom_point() + theme_light(base_size = input$fontsize)
+  ggplot(penguins, aes_string(x = input$x, y = input$y, color="species")) + geom_point(size=input$pointsize) + theme_light()
   })
 }
 
@@ -252,37 +254,37 @@ shinyApp(ui, server)
 Whew! We made it! We created a nice looking app with `shinydashboard`. And now we can easily see how even a basic shiny app can become messy and why it's always helpful to include lots of annotations.  
 
 ## Practice
-We will use data from a study on vertebrate community composition and impacts from defaunation in Gabon, Africa.  
+We will use data from wolves 
 
-Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon. _Journal of Applied Ecology_. 2016.   
-
-1. Load `IvindoData_DryadVersion.csv` and use the function(s) of your choice to get an idea of the overall structure, including its dimensions, column names, variable classes, etc. As part of this, determine if NA's are present and how they are treated.
+1. Load `wolves_dataset.csv` and use the function(s) of your choice to get an idea of the overall structure, including its dimensions, column names, variable classes, etc. As part of this, determine if NA's are present and how they are treated.
 ```{r}
-gabon <- readr::read_csv("data/IvindoData_DryadVersion.csv")
+#wolves_dataset <- readr::read_csv("wolves_data/wolves_dataset.csv")
+```
+```{r}
+wolves <- wolves_dataset
 ```
 
 ```{r}
-names(gabon)
+names(wolves)
 ```
 
 ```{r}
-glimpse(gabon)
+wolves%>%
+  count(pop)
 ```
 
 2. Build an app that re-creates the plots shown on page 810 of this paper. It compares the relative abundance % to the distance from villages in rural Gabon. Use shiny dashboard and add aesthetics to the plot.  
 ```{r}
 ui <- dashboardPage(
-  dashboardHeader(title = "Relative Abundance"),
+  dashboardHeader(title = "Counts By Sex"),
   dashboardSidebar(disable = T),
   dashboardBody(
   fluidRow(
   box(title = "Plot Options", width = 3,
-  selectInput("x", "Select RA Taxon", choices = c("RA_Apes", "RA_Birds", "RA_Elephant", "RA_Monkeys", "RA_Rodent", "RA_Ungulate"), 
-              selected = "RA_Apes"),
-      hr(),
-      helpText("Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon. Journal of Applied Ecology. 2016.")
+  selectInput("x", "Select Pop", choices = c("AK.PEN", "BAN.JAS", "BC","DENALI", "ELLES", "GTNP", "INT.AK", "MI", "MT"), 
+              selected = "AK.PEN")
   ), # close the first box
-  box(title = "Relative Abundance %", width = 6,
+  box(title = "Counts By Sex", width = 7,
   plotOutput("plot", width = "600px", height = "500px")
   ) # close the second box
   ) # close the row
@@ -292,12 +294,13 @@ ui <- dashboardPage(
 server <- function(input, output, session) { 
   
   output$plot <- renderPlot({
-  gabon %>% 
-  ggplot(aes_string(x = "Distance", y = input$x)) +
-  geom_point(size=4)+
-  geom_smooth(method=lm, se=T)+
-  scale_x_continuous(breaks=seq(0, 30, by = 5))+ theme_light(base_size = 18)
+  wolves %>% 
+  filter(sex!="NA")%>%
+  filter(pop==input$x)%>%
+  ggplot(aes_string(x = "sex", fill="sex")) +
+  geom_bar()
   })
+  
   
   # stop the app when we close it
   session$onSessionEnded(stopApp)
