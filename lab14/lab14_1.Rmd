@@ -25,6 +25,14 @@ options(scipen=999) #cancels the use of scientific notation for the session
 
 
 ```
+```{r}
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+```
+```{r}
+#install.packages("ggVennDiagram")
+library("ggVennDiagram")
+```
 
 ## Load The Data
 
@@ -99,6 +107,14 @@ penguins %>%
   coord_flip()
 ```
 
+```{r}
+penguins %>% 
+  filter(sex=="female")%>%
+  ggplot(aes(x = island, y = body_mass_g, fill = species)) +
+  geom_violin(alpha = .3, na.rm = TRUE) +
+  geom_boxplot(color = "grey", alpha = .3, na.rm = TRUE) +
+  coord_flip()
+```
 
 Cool! Now we see that there are actually some of the smallest penguins on Biscoe island. 
 
@@ -108,12 +124,13 @@ Try making a violin plot of taxon from the homerange data:
  1. Remind yourself what the data look like:
 
 ```{r}
-
+homerange
 ```
 
   2. Make a violin plot of `log10.mass` by `taxon`, and a box plot of `log10.mass` by `taxon`. You can use 1 or 2 plots.
 ```{r}
-
+homerange%>%
+  ggplot(aes(x=log10.mass, y=taxon, fill=taxon))+ geom_boxplot(color="lightblue", fill="gray", alpha=.4)+ geom_violin(alpha=.5) 
 ```
 
 3. What information can you gather from the violin plot that might have been missed with the box plot?
@@ -142,7 +159,7 @@ heartrate_long
 heartrate_long %>%
   ggplot(aes(patient, drug, fill= heartrate)) + 
   geom_tile() +
-  scale_fill_gradient(low="yellow", high="red")
+  scale_fill_gradient(low="pink", high="blue")
 ```
 
 Now, let's instead look at how each drug changed the heartrate from the normal, using mutate
@@ -161,7 +178,7 @@ heartrate_diff
 heartrate_diff %>% 
   ggplot(aes(patient, drug, fill= heartrate)) + 
   geom_tile()+
-  scale_fill_gradient2(low="green", mid = "white", high="red")
+  scale_fill_gradient2(low="pink", mid = "white", high="blue")
 # scale_fill_graient2 lets you set a color direction for zero (mid), positive (high), and negative (low)
 ```
 
@@ -172,7 +189,9 @@ heartrate_diff %>%
   2. Make a heat map for body mass by species & sex for penguins
 
 ```{r}
-
+penguins%>%
+  filter(sex=="female"|sex=="male")%>%
+  ggplot(aes(x=species, y=sex, fill=body_mass_g)) + geom_tile() + scale_fill_gradient(low="pink", high="blue")
 ```
 
 
