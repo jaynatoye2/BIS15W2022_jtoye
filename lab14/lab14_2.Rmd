@@ -2,10 +2,11 @@
 title: "Data Visualization: Venn Diagrams & Word Clouds"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
     toc: yes
     toc_float: yes
+    keep_md: yes
   pdf_document:
     toc: yes
 ---
@@ -50,6 +51,7 @@ Do they fly?
 flying_vec <- homerange %>%
   filter(locomotion == "flying")%>%
   pull(common.name)
+flying_vec
 ```
 
 Do they swim?
@@ -57,6 +59,7 @@ Do they swim?
 swimming_vec <- homerange %>%
   filter(locomotion == "swimming")%>%
   pull(common.name)
+swimming_vec
 ```
 
 To build a Venn diagram of these, we make a list or the vectors that represent our questions. 
@@ -65,7 +68,7 @@ The list represents the number of circles going into the venn diagram" and the v
 ```{r}
 fly_or_swim_list <- list(flying_vec, swimming_vec)
 
-ggVennDiagram(fly_or_swim_list, category.names = c("Fly", "Swim"))
+ggVennDiagram(fly_or_swim_list, category.names = c("Fly", "Swim")) 
 ```
 
 Woah! an image!
@@ -79,7 +82,7 @@ Do they fly? Are they a bird?
 We can recycle the `flying_vec`
 Do they fly?
 ```{r}
-# flying_vec
+flying_vec
 ```
 
 Are they a bird?
@@ -87,6 +90,7 @@ Are they a bird?
 bird_vec <- homerange %>%
   filter(taxon == "birds")%>%
   pull(common.name)
+bird_vec
 ```
 
 
@@ -107,20 +111,20 @@ homerange%>%
 
 what is the flying non-bird?
 ```{r}
-
+homerange%>%
+  filter(locomotion == "flying")%>%
+  filter(taxon != "birds")
 ```
 
 
 
 ### Adding Circles
 Are they an herbivore?
-
-
 ```{r}
 herbivore_vec <- homerange %>%
   filter(trophic.guild == "herbivore")%>%
   pull(common.name)
-
+herbivore_vec
 ```
 
 ```{r}
@@ -130,14 +134,13 @@ ggVennDiagram(fly_bird_herbi_list, category.names = c("Fly", "Bird", "Herbivore"
 ```
 
 ### Make It Pretty!
-
 Lets work with the 2 question plot for now:
 ```{r}
   # you can toggle edge size
 venn_plot <- ggVennDiagram(fly_or_bird_list, category.names = c("Fly", "Bird"), edge_size = 1.5)
 
 venn_plot +
-  scale_fill_distiller(palette = "Greys")+ #distiller is for discrete data
+  scale_fill_distiller(palette = "Blues")+ #distiller is for discrete data
   labs(title = "Do all birds fly? Do only birds fly?",
          caption = ("you can add a caption here, e.g.: Studys show not all birds fly, and not only birds fly")
   )
@@ -152,7 +155,7 @@ ggVennDiagram(fly_or_bird_list,
               label_size = 4                              # sets overlap-label size
               )+
   scale_color_brewer(palette = "Set3")+                   # sets palette for circle colors
-  scale_fill_distiller(palette = "Greys")+                # distiller is for discrete data
+  scale_fill_distiller(palette = "Purples")+                # distiller is for discrete data
   labs(title = "Do all birds fly? Do only birds fly?",
          caption = ("you can add a caption here, e.g.: Studys show not all birds fly, and not only birds fly") )
 ```
@@ -165,7 +168,7 @@ Try making a 4 circle Venn diagram to show the intersection of:
 - swimming
 - carnivores
 - aquatic
-- endotherms
+- ectotherms
 
 You can use locomotion, trophic guild, realm, and thermoregulation. 
 
@@ -194,9 +197,10 @@ ecto_vec<- homerange %>%
 ```{r}
 
 # Make the list of vectors:
-
+four_cat_vec <- list(swimming_vec, carni_vec, aqua_vec, ecto_vec)
 
 # Make the plot:
+ggVennDiagram(four_cat_vec, category.names = c("Swimming", "Carnivore", "Aquatic", "Ectotherm"))
 ```
 
 
@@ -207,7 +211,13 @@ Use dplyr to determine which 20 animals from this plot are:
 - NOT Carnivores?
 
 ```{r}
-
+homerange%>%
+  filter(thermoregulation == "ectotherm")%>%
+  filter(realm== "aquatic")%>%
+  filter(locomotion=="swimming")%>%
+  filter(trophic.guild!="carnivore")%>%
+  select(common.name)
+  
 ```
 
 
@@ -248,11 +258,22 @@ If they dont fit, try tinkering the `scale_size_area(max_size =   )`
 
 make the count table:
 ```{r}
-
+reptilia_count <- homerange%>%
+  filter(class=="reptilia")%>%
+  count(family)%>%
+  arrange(desc(n))
+reptilia_count
 ```
 
 
 make the plot:
 ```{r}
-
+reptilia_count%>%
+  ggplot(aes(label = family, size = n, color = family)) +
+  geom_text_wordcloud() +
+  scale_size_area(max_size = 15) +
+  theme_linedraw() 
 ```
+
+#The End
+See you on Thursday!
